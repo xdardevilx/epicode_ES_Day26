@@ -14,6 +14,10 @@ class Pet {
     this.species = _species;
     this.breed = _breed;
   }
+
+  compareOwnerName(otherOwnerName) {
+    return this.ownerName === otherOwnerName;
+  }
 }
 
 const fillRowWithCards = function () {
@@ -21,16 +25,16 @@ const fillRowWithCards = function () {
 
   row.innerHTML = "";
 
-  pets.forEach((Pet) => {
+  pets.forEach((pet) => {
     const newCol = document.createElement("div");
     newCol.classList.add("col");
 
     newCol.innerHTML = `
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">${Pet.petName} di ${Pet.ownerName}</h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">${Pet.species}</h6>
-                <h6 class="card-subtitle mb-2 text-body-secondary">${Pet.breed}</h6>
+                <h5 class="card-title">${pet.petName} di ${pet.ownerName}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">${pet.species}</h6>
+                <h6 class="card-subtitle mb-2 text-body-secondary">${pet.breed}</h6>
             </div>
         </div>
         `;
@@ -47,16 +51,30 @@ const formReference = document.getElementsByTagName("form")[0];
 formReference.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const contact = new Pet(
+  const newPet = new Pet(
     petNameInput.value,
     ownerNameInput.value,
     speciesInput.value,
     breedInput.value
   );
 
-  console.log("CONTATTO CREATO", contact);
+  console.log("NUOVO ANIMALE DOMESTICO", newPet);
 
-  pets.push(contact);
+  const hasSameOwner = pets.some((pet) =>
+    pet.compareOwnerName(newPet.ownerName)
+  );
+
+  if (hasSameOwner) {
+    const messageParagraph = document.createElement("p");
+    messageParagraph.textContent = "Hanno lo stesso padrone";
+    document.body.appendChild(messageParagraph);
+  } else {
+    const messageParagraph = document.createElement("p");
+    messageParagraph.textContent = "Non hanno lo stesso padrone";
+    document.body.appendChild(messageParagraph);
+  }
+
+  pets.push(newPet);
 
   fillRowWithCards();
 });
