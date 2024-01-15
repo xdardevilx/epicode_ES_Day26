@@ -3,9 +3,8 @@ const ownerNameInput = document.getElementById("ownerName");
 const speciesInput = document.getElementById("species");
 const breedInput = document.getElementById("breed");
 
-const saveButton = document.querySelector("form button");
-
 const pets = [];
+let sameOwner = [];
 
 class Pet {
   constructor(_petName, _ownerName, _species, _breed) {
@@ -25,9 +24,17 @@ const fillRowWithCards = function () {
 
   row.innerHTML = "";
 
-  pets.forEach((pet) => {
+  pets.forEach((pet, index) => {
     const newCol = document.createElement("div");
     newCol.classList.add("col");
+
+    const messageParagraph = document.createElement("p");
+
+    if (sameOwner[index] === true) {
+      messageParagraph.textContent = "Hanno lo stesso padrone";
+    } else if (sameOwner[index] === false) {
+      messageParagraph.textContent = "Non hanno lo stesso padrone";
+    }
 
     newCol.innerHTML = `
         <div class="card">
@@ -37,11 +44,14 @@ const fillRowWithCards = function () {
                 <h6 class="card-subtitle mb-2 text-body-secondary">${pet.breed}</h6>
             </div>
         </div>
-        `;
+    `;
+
+    newCol.querySelector(".card-body").appendChild(messageParagraph);
 
     row.appendChild(newCol);
   });
 
+  petNameInput.value = "";
   ownerNameInput.value = "";
   speciesInput.value = "";
   breedInput.value = "";
@@ -58,21 +68,11 @@ formReference.addEventListener("submit", function (e) {
     breedInput.value
   );
 
-  console.log("NUOVO ANIMALE DOMESTICO", newPet);
-
   const hasSameOwner = pets.some((pet) =>
     pet.compareOwnerName(newPet.ownerName)
   );
 
-  if (hasSameOwner) {
-    const messageParagraph = document.createElement("p");
-    messageParagraph.textContent = "Hanno lo stesso padrone";
-    document.body.appendChild(messageParagraph);
-  } else {
-    const messageParagraph = document.createElement("p");
-    messageParagraph.textContent = "Non hanno lo stesso padrone";
-    document.body.appendChild(messageParagraph);
-  }
+  sameOwner.push(hasSameOwner);
 
   pets.push(newPet);
 
